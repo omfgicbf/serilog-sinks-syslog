@@ -31,13 +31,13 @@ namespace Serilog
         /// <seealso cref="https://github.com/serilog/serilog/wiki/Formatting-Output"/>
         /// </param>
         public static LoggerConfiguration LocalSyslog(this LoggerSinkConfiguration loggerSinkConfig,
-            Facility facility = Facility.Local0, string outputTemplate = null)
+            Facility facility = Facility.Local0, string outputTemplate = null, string appIdentity = null)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 throw new ArgumentException("The local syslog sink is only supported on Linux systems");
 
             var formatter = GetFormatter(SyslogFormat.Local, null, facility, outputTemplate);
-            var syslogService = new LocalSyslogService(facility);
+            var syslogService = new LocalSyslogService(facility, appIdentity);
             syslogService.Open();
 
             var sink = new SyslogLocalSink(formatter, syslogService);

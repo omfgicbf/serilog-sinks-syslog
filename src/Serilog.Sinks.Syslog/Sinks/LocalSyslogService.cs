@@ -10,6 +10,8 @@ namespace Serilog.Sinks.Syslog
 {
     public class LocalSyslogService
     {
+        private string appIdentity;
+
         /// <summary>
         /// Opens a connection to the local syslog service
         /// </summary>
@@ -47,9 +49,10 @@ namespace Serilog.Sinks.Syslog
         private IntPtr appIdentityHandle = IntPtr.Zero;
         private readonly Facility facility;
 
-        public LocalSyslogService(Facility facility)
+        public LocalSyslogService(Facility facility, string appIdentity = null)
         {
             this.facility = facility;
+            this.appIdentity = appIdentity ?? AppDomain.CurrentDomain.FriendlyName;
         }
 
         /// <summary>
@@ -57,8 +60,7 @@ namespace Serilog.Sinks.Syslog
         /// </summary>
         public virtual void Open()
         {
-            var appIdentity = AppDomain.CurrentDomain.FriendlyName;
-            this.appIdentityHandle = Marshal.StringToHGlobalAnsi(appIdentity);
+            this.appIdentityHandle = Marshal.StringToHGlobalAnsi(this.appIdentity);
 
             openlog(this.appIdentityHandle, SyslogOptions.LOG_PID, this.facility);
         }
