@@ -33,8 +33,9 @@ namespace Serilog
         public static LoggerConfiguration LocalSyslog(this LoggerSinkConfiguration loggerSinkConfig,
             Facility facility = Facility.Local0, string outputTemplate = null, string appIdentity = null)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                throw new ArgumentException("The local syslog sink is only supported on Linux systems");
+            // temp disable this check; see https://github.com/mono/mono/issues/7011
+            //if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            //    throw new ArgumentException("The local syslog sink is only supported on Linux systems");
 
             var formatter = GetFormatter(SyslogFormat.Local, null, facility, outputTemplate);
             var syslogService = new LocalSyslogService(facility, appIdentity);
